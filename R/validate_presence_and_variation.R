@@ -142,3 +142,6 @@ validate_presence_and_variation <- function(
 
   invisible(NULL)
 }
+
+
+devtools::document()
