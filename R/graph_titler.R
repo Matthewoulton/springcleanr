@@ -3,6 +3,8 @@
 #' This function converts a variable name (given as a symbol or string) into a title-cased, human-readable label
 #' suitable for use in graph titles or axis labels. It handles common transformations such as replacing underscores,
 #' converting to title case, preserving acronyms, formatting numeric ranges, and handling special words.
+#'@importFrom rlang enquo as_label
+#'@importFrom stringr str_replace_all str_to_title str_replace regex
 #'
 #' @param var A variable name or character string. Can be passed unquoted (as a symbol) or quoted (as a string).
 #'
@@ -23,6 +25,7 @@
 #' graph_titler("fbi_crime_statistics")
 #'
 #' @export
+
 
 
 graph_titler <- function(var) {
@@ -56,6 +59,3 @@ graph_titler <- function(var) {
 
   return(var_name)
 }
-
-devtools::document()
-

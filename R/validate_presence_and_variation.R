@@ -8,7 +8,7 @@
 #' @param variables A character vector of column names to check.
 #' @param outcome_list Optional. A vector of valid values. If provided, the function checks that all values
 #'   in the variables are included in this list (after removing `NA`s).
-#' @param stop Logical. If `TRUE`, the function stops on failure. If `FALSE` (default), it issues a warning.
+#' @param hardstop Logical. If `TRUE`, the function stops on failure. If `FALSE` (default), it issues a warning.
 #' @param variable_type Either `"numeric"`, `"string"`, or `FALSE`. If `"numeric"` or `"string"`, the function checks
 #'   that each column has the corresponding type. If `FALSE`, skips type checking.
 #'
@@ -21,7 +21,7 @@
 #' - It has variation (i.e., not all values are the same).
 #' - If `outcome_list` is provided, all non-`NA` values must be found in this list.
 #'
-#' If `stop = TRUE`, any failure results in an error. Otherwise, failures issue warnings and the function continues.
+#' If `hardstop = TRUE`, any failure results in an error. Otherwise, failures issue warnings and the function continues.
 #'
 #' @examples
 #' df <- data.frame(score = c(1, 2, 2, NA), category = c("A", "A", "A", "A"))
@@ -31,12 +31,11 @@
 #' @export
 
 
-
 validate_presence_and_variation <- function(
     data,
     variables,
     outcome_list   = NULL,
-    stop           = FALSE,
+    hardstop           = FALSE,
     variable_type  = "numeric"  # "numeric", "string", or FALSE
 ) {
   # Ensure 'variables' is a character vector
@@ -46,7 +45,7 @@ validate_presence_and_variation <- function(
 
   # Helper to conditionally throw error or warning
   message_fun <- function(msg) {
-    if (stop) {
+    if (hardstop) {
       stop(msg, call. = FALSE)
     } else {
       warning(msg, call. = FALSE)
@@ -142,6 +141,3 @@ validate_presence_and_variation <- function(
 
   invisible(NULL)
 }
-
-
-devtools::document()

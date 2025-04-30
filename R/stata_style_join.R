@@ -201,6 +201,3 @@ stata_style_join <- function(first_data,
   joined_data
 }
 
-
-devtools::document()
-
