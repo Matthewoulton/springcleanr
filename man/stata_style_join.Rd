@@ -5,75 +5,41 @@
 \title{Stata-style Join Function}
 \usage{
 stata_style_join(
-  first_data,
-  second_data,
+  first_df,
+  second_df,
   join_type = "left",
   by = NULL,
   merge_var = "merge_var",
-  drop_summaries = FALSE,
+  drop_summaries = TRUE,
   column_update = FALSE
 )
 }
 \arguments{
-\item{first_data}{A dataframe or tibble. The primary dataset to be merged.}
+\item{first_df}{A data frame or tibble. The primary dataset to be merged.}
 
-\item{second_data}{A dataframe or tibble. The secondary dataset to be merged.}
+\item{second_df}{A data frame or tibble. The secondary dataset to be merged.}
 
-\item{join_type}{A character string specifying the type of join.
-Options: \code{"left"}, \code{"right"}, \code{"inner"}, \code{"full"}, \code{"1:1"}, \code{"1:m"}, \code{"m:1"}, \code{"m:m"}.
-\code{"1:1"} ensures uniqueness in both datasets, \code{"1:m"} enforces uniqueness in \code{first_data},
-\code{"m:1"} enforces uniqueness in \code{second_data}, and \code{"m:m"} allows many-to-many matches.}
+\item{join_type}{A character string specifying the type of join to perform.
+Options: \code{"left"}, \code{"right"}, \code{"inner"}, \code{"full"}, \code{"1:1"}, \code{"1:m"}, \code{"m:1"}, \code{"m:m"}.}
 
-\item{by}{A character vector specifying the variable(s) to join by.
-If \code{NULL}, common variables between both datasets will be used.}
+\item{by}{A character vector of column names to join by. If \code{NULL}, common variables between the datasets are used.}
 
-\item{merge_var}{A string or \code{FALSE}. If specified, adds a column indicating merge status:
-\code{1 = matched}, \verb{2 = first only}, \verb{3 = second only}. If \code{TRUE}, defaults to \code{"merge_var"}.
-Set to \code{FALSE} to disable.}
+\item{merge_var}{A string or \code{FALSE}. If not \code{FALSE}, a labelled merge indicator column is added to the result.
+If \code{TRUE}, defaults to \code{"merge_var"}.}
 
-\item{drop_summaries}{Logical. If \code{TRUE}, prints a summary of the number of matched and unmatched observations.}
+\item{drop_summaries}{Logical. If \code{TRUE}, prints a summary of matched and unmatched row counts and dataset sizes.}
 
-\item{column_update}{Logical or character vector. If \code{TRUE}, updates all common columns (excluding \code{by} variables)
-by replacing \code{.x} columns with \code{.y} values if \code{.x} is \code{NA}. If a character vector, only the specified variables
-are updated.}
+\item{column_update}{Logical or character vector. If \code{TRUE}, overlapping columns (excluding \code{by}) are updated by coalescing \code{.x} and \code{.y} columns.}
 }
 \value{
-A dataframe with the merged results, optionally including \code{merge_var} and updated columns.
+A data frame with the merged result. May include:
+\itemize{
+\item A labelled merge indicator column (if \code{merge_var} is set).
+\item Coalesced columns (if \code{column_update} is used).
+}
 }
 \description{
 This function mimics Stata’s merging functionality while retaining R’s capabilities
-and adding additional features. It allows for different types of joins, labeled merge indicators,
-column updates, and summary outputs.
-}
-\details{
-\itemize{
-\item \strong{Join Types}: Supports Stata-style joins (\code{1:1}, \code{1:m}, \code{m:1}, \code{m:m}) and standard joins (\code{left}, \code{right}, \code{inner}, \code{full}).
-\item \strong{Column Updates}: Allows updating overlapping variables instead of keeping \code{.x} and \code{.y} suffixes.
-\item \strong{Merge Indicator}: Adds a labeled variable indicating match status.
-\item \strong{Summaries}: Prints counts of matched/unmatched observations if \code{drop_summaries = TRUE}.
-}
-}
-\examples{
-# Example datasets
-first_data <- dplyr::tibble(
-  id = c(1, 2, 3),
-  value = c(10, NA, 30),
-  category = c("A", "B", "C")
-)
-
-second_data <- dplyr::tibble(
-  id = c(2, 3, 4),
-  value = c(20, 40, 50),
-  category = c("X", "Y", "Z")
-)
-
-# Left join with automatic column updates
-stata_style_join(first_data, second_data, join_type = "left", by = "id", column_update = TRUE)
-
-# Inner join with merge variable
-stata_style_join(first_data, second_data, join_type = "inner", by = "id", merge_var = TRUE)
-
-# Many-to-many join with a warning
-stata_style_join(first_data, second_data, join_type = "m:m", by = "id")
-
+and adding additional features. It supports a range of join types (including 1:1, 1:m, m:1),
+provides labelled merge indicators, optional coalescing column updates, and summary output.
 }

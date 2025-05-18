@@ -44,22 +44,22 @@
 #'
 #' @export
 
+duplicates_function <- function(data, variables = dplyr::everything(), method = "report") {
 
+    if (!requireNamespace("dplyr", quietly = TRUE) ||
+        !requireNamespace("tidyselect", quietly = TRUE) ||
+        !requireNamespace("rlang", quietly = TRUE)) {
+      stop("Packages 'dplyr', 'tidyselect', and 'rlang' are required but not all are installed.")
+    }
 
+    var_expr <- rlang::enquo(variables)
+    variables <- tidyselect::eval_select(var_expr, data)
 
+    if (length(variables) == 0) {
+      stop("No variables were selected.")
+    }
 
-
-duplicates_function <- function(data, variables = NULL, method = "report") {
-
-  # Ensure required packages are loaded
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop("The 'dplyr' package is required but not installed.")
-  }
-
-  # If no variables are provided, use all variables in the dataset
-  if (is.null(variables)) {
-    variables <- names(data)
-  }
+    var_names <- names(variables)
 
   # Group by the specified variables and calculate counts
   grouped_data <- data %>%
@@ -72,7 +72,7 @@ duplicates_function <- function(data, variables = NULL, method = "report") {
     # Show how many rows appear at each 'count' (level of duplication).
     result <- grouped_data %>%
       dplyr::count(count, name = "num_occurrences") %>%
-      dplyr::rename(duplication_level = count)
+      dplyr::rename(Observations = count)
 
     return(result)
 
@@ -85,7 +85,7 @@ duplicates_function <- function(data, variables = NULL, method = "report") {
 
     report <- grouped_data %>%
       dplyr::count(count, name = "num_occurrences") %>%
-      dplyr::rename(duplication_level = count)
+      dplyr::rename(Copies = count)
 
     print(report)
 
@@ -111,8 +111,8 @@ duplicates_function <- function(data, variables = NULL, method = "report") {
     if (any(grouped_data$count > 1)) {
       # If duplicates exist, create the same summary as in 'report'
       duplication_summary <- grouped_data %>%
-        dplyr::count(count, name = "num_occurrences") %>%
-        dplyr::rename(duplication_level = count)
+        dplyr::count(count, name = "Observations") %>%
+        dplyr::rename(Copies = count)
 
       # Convert the summary to text for the error message
       summary_text <- paste(capture.output(print(duplication_summary)), collapse = "\n")

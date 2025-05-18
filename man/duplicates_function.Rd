@@ -4,7 +4,7 @@
 \alias{duplicates_function}
 \title{Identify and Handle Duplicate Rows}
 \usage{
-duplicates_function(data, variables = NULL, method = "report")
+duplicates_function(data, variables = dplyr::everything(), method = "report")
 }
 \arguments{
 \item{data}{A dataframe or tibble to check for duplicates.}
