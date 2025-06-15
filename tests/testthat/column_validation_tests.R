@@ -275,3 +275,39 @@ test_that("column_validation skips all type checks when variable_type is FALSE",
     regexp = "Validation: Success\\."
   )
 })
+
+
+test_that("column_validation reports NA counts correctly when NA_count = TRUE", {
+  df <- data.frame(
+    var1 = c(1, NA, 3, NA, 5),
+    var2 = c("a", "b", NA, "d", "e"),
+    var3 = c(NA, NA, NA, NA, NA)
+  )
+
+  # Case 1: NA_count = TRUE should issue a warning for NA counts
+  expect_warning(
+    column_validation(
+      data = df,
+      variables = c("var1", "var2", "var3"),
+      variable_type = FALSE,
+      hardstop = FALSE,
+      check_constant = FALSE,
+      NA_count = TRUE
+    ),
+    regexp = "NA value.*\\("
+  )
+
+  # Case 2: NA_count = FALSE should produce the success message only
+  expect_message(
+    column_validation(
+      data = df,
+      variables = c("var1", "var2"),
+      variable_type = FALSE,
+      hardstop = FALSE,
+      check_constant = FALSE,
+      NA_count = FALSE
+    ),
+    regexp = "Validation: Success"
+  )
+})
+

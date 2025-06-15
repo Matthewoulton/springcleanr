@@ -7,11 +7,14 @@
 stata_style_join(
   first_df,
   second_df,
+  relationship,
   join_type = "left",
   by = NULL,
   merge_var = "merge_var",
-  drop_summaries = TRUE,
-  column_update = FALSE
+  assert = NULL,
+  drop_summaries = FALSE,
+  column_update = FALSE,
+  suffix = c(".x", ".y")
 )
 }
 \arguments{
@@ -19,27 +22,44 @@ stata_style_join(
 
 \item{second_df}{A data frame or tibble. The secondary dataset to be merged.}
 
+\item{relationship}{A character string specifying the expected observation-level relationship
+between \code{first_df} and \code{second_df}. This is a \strong{required} argument.
+Options: \code{"1:1"}, \code{"1:m"}, \code{"m:1"}, \code{"m:m"}. Triggers validation checks for uniqueness.}
+
 \item{join_type}{A character string specifying the type of join to perform.
-Options: \code{"left"}, \code{"right"}, \code{"inner"}, \code{"full"}, \code{"1:1"}, \code{"1:m"}, \code{"m:1"}, \code{"m:m"}.}
+Options: \code{"left"}, \code{"inner"}, \code{"full"}. Passed to the appropriate \code{dplyr} join function.}
 
-\item{by}{A character vector of column names to join by. If \code{NULL}, common variables between the datasets are used.}
+\item{by}{A character vector of column names to join by. If \code{NULL}, common variable names are used.}
 
-\item{merge_var}{A string or \code{FALSE}. If not \code{FALSE}, a labelled merge indicator column is added to the result.
-If \code{TRUE}, defaults to \code{"merge_var"}.}
+\item{merge_var}{A character string or \code{NULL}. If \code{NULL}, no merge indicator is added.
+#' @param assert Integer vector or NULL. If not NULL, asserts that all observations fall into the
+specified merge categories:
+\code{1 = matched}, \verb{2 = first only}, \verb{3 = second only}.
+For example, \code{assert = 1} checks that all rows matched. Default is \code{NULL}.}
 
-\item{drop_summaries}{Logical. If \code{TRUE}, prints a summary of matched and unmatched row counts and dataset sizes.}
+\item{drop_summaries}{Logical. If \code{FALSE}, prints a summary of matched and unmatched row counts and dataset sizes.}
 
-\item{column_update}{Logical or character vector. If \code{TRUE}, overlapping columns (excluding \code{by}) are updated by coalescing \code{.x} and \code{.y} columns.}
+\item{column_update}{Logical or character vector. If \code{TRUE}, overlapping columns (excluding \code{by}) are updated by coalescing suffix variants.
+If a character vector, only those specific variables will be updated.}
+
+\item{suffix}{A character vector of length 2 specifying suffixes for overlapping column names
+from \code{first_df} and \code{second_df}. Defaults to \code{c(".x", ".y")}. Passed to \verb{*_join()} methods.}
 }
 \value{
 A data frame with the merged result. May include:
 \itemize{
 \item A labelled merge indicator column (if \code{merge_var} is set).
 \item Coalesced columns (if \code{column_update} is used).
+\item Optional printed summaries of match status and row counts.
 }
 }
 \description{
-This function mimics Stata’s merging functionality while retaining R’s capabilities
-and adding additional features. It supports a range of join types (including 1:1, 1:m, m:1),
-provides labelled merge indicators, optional coalescing column updates, and summary output.
+This function mimics Stata’s merging functionality while retaining R’s flexibility
+and adding features like labelled merge indicators, join diagnostics, and column coalescing.
+It separates the \emph{type of SQL join} from the \emph{relationship between the datasets}, offering explicit
+checks for one-to-one, one-to-many, and many-to-many merges.
+}
+\examples{
+stata_style_join(df1, df2, join_type = "left", relationship = "m:1", by = "id")
+
 }

@@ -10,7 +10,8 @@ column_validation(
   outcome_list = NULL,
   hardstop = FALSE,
   variable_type = "numeric",
-  check_constant = TRUE
+  check_constant = TRUE,
+  NA_count = FALSE
 )
 }
 \arguments{

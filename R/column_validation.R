@@ -50,7 +50,8 @@ column_validation <- function(
     outcome_list   = NULL,
     hardstop       = FALSE,
     variable_type  = "numeric",  # Can be single value or vector
-    check_constant = TRUE        # New: check constant-valued columns
+    check_constant = TRUE,        # New: check constant-valued columns
+    NA_count = FALSE
 ) {
   if (!is.character(variables)) {
     stop("`variables` must be a character vector of column names.")
@@ -120,6 +121,17 @@ column_validation <- function(
           "Column '", var_name, "' is constant (all values = ", unique_vals[1], ")."
         ))
       }
+    }
+
+    if (isTRUE(NA_count)) {
+      total_rows <- length(column_vals)
+      na_count <- sum(is.na(column_vals))
+      na_pct <- round(100 * na_count / total_rows, 1)
+
+      message_fun(paste0(
+        "Column '", var_name, "' has ", na_count, " NA value",
+        if (na_count == 1) "" else "s", " (", na_pct, "%)."
+      ))
     }
 
     if (!is.null(outcome_list)) {

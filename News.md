@@ -45,7 +45,7 @@
     `first_data` and `second_data` have been renamed to `first_df` and `second_df`.
 
 -   **Default summary output enabled**\
-    The `drop_summaries` argument now defaults to `TRUE`, meaning a summary of matched and unmatched rows will be printed by default after joins.
+    The `drop_summaries` argument now defaults to `FALSE`, and TRUE/FALSE redefined, meaning a summary of matched and unmatched rows will be printed by default after joins.
 
 -   **Always computes internal merge indicator**\
     The merge status is now always computed internally, even if `merge_var = FALSE`. The column is dropped from the output if not requested, but used for summary statistics regardless.
@@ -63,8 +63,17 @@
   `stata_style_join()` now accepts a `suffix` argument (default `c(".x", ".y")`), which is passed to the underlying join operation. This allows users to control the names of overlapping columns.  
   Column update logic now uses these suffixes when identifying `.x` and `.y` columns for coalescing.
 
+- **Separated out relationship argument (as in dplyr)**
+  `stata_style_join()` now accepts "1:1", "m:1", "m:1", "m:m" in the relationship argument, instead of the join_type one.
+  
+- **Added assert argument to `stata_style_join()`**
+
   ------------------------------------------------------------------------
 
 ### 🔧 `graph_titler()`
+
+I dropped this function.
+
+### 🔧 `find_best_column_match()`
 
 I dropped this function.

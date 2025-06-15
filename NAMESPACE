@@ -2,5 +2,4 @@
 
 export(column_validation)
 export(duplicates_function)
-export(find_best_column_match)
 export(stata_style_join)
