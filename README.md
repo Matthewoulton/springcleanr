@@ -1,15 +1,83 @@
-# springcleanr
-Data cleaning functions for R.
+# 📦 R Data Cleaning Utilities (STATA-style)
 
-These carry out some common steps in cleaning data. Many imitate or build on functions available in STATA.
+This package provides a set of functions to streamline and safeguard common data cleaning operations in R, inspired by workflows in STATA. It is designed for data analysts and applied researchers who value robust diagnostics and careful data handling, particularly when working with administrative datasets or structured survey data.
 
-The functions are:
+---
 
-duplicates_function: this mirrors STATA functionality (duplicates), allowing you to report or drop duplicates. It also has an 'assert' method, which contains a stopifnot if there are any duplicates (like isid in stata).
+## ✨ Included Functions
 
-find_best_column_match: this function takes a string or an enquo object and a dataset, and looks in the dataset to find the best match among the columns. This makes nesting enquos much much easier, and avoids quotation problems when calling enquo (or similar) within functions. I use this a lot, and have found it much easier.
+### `stata_style_join()`
 
-validate_presence_and_variation: this function has quite a few (relatively simple) capabilities, but the main is to check that a column exists in the dataset, that it is of a given type, and that its values are contained within a given set (e.g that they are 0 or 1).
-graph_titler: this function works similarly to clean_names, but in reverse. It is intended to take nice tidyverse-style variable names (e.g gdp_growth) and render them in title case (e.g GDP Growth), so that when dynamically producing titles, it is straightforward to change the title of graphs dynamically  - you can just make the xtitle graph_titler(your_var_name). It is configured to work with enquo objects as well as strings.
+A robust merging function that mirrors STATA's `merge` behavior while retaining the flexibility of R.
 
-stata_style_join: this function imitates STATA's merges, allowing more confidence that merges have not introduced errors. 
+**Key Features:**
+- Explicit separation of SQL join type (`left`, `inner`, `full`) from observation-level relationship (`"1:1"`, `"1:m"`, `"m:1"`, `"m:m"`).
+- Triggers validation errors or warnings based on join relationships, guarding against unintentional many-to-many joins.
+- Optionally adds a labelled merge indicator (`merge_var`) similar to STATA’s `_merge`.
+- Optional summary of matched/unmatched observations.
+- Optional coalescing of overlapping columns (`column_update`).
+
+**Example:**
+```r
+stata_style_join(df1, df2, join_type = "left", relationship = "m:1", by = "id")
+```
+
+---
+
+### `duplicates_function()`
+
+Flexible handling of duplicate rows, modeled after STATA’s `duplicates` and `isid`.
+
+**Modes:**
+- `"report"`: print duplicates by key.
+- `"drop"`: remove duplicates.
+- `"assert"`: raise an error if any duplicates exist (like `isid` in STATA).
+
+**Example:**
+```r
+duplicates_function(data, by = c("id", "year"), mode = "assert")
+```
+
+---
+
+### `validate_presence_and_variation()`
+
+Performs structured checks on input columns, ensuring that key variables meet type, range, and value expectations.
+
+**Checks include:**
+- Column presence.
+- Type validation (`"numeric"`, `"character"`).
+- Membership in a user-specified value list (`outcome_list`).
+- Constant value detection.
+- NA diagnostics (with `NA_count = TRUE`).
+
+**Example:**
+```r
+validate_presence_and_variation(
+  data = df,
+  variables = c("eligible", "takeup"),
+  variable_type = "numeric",
+  outcome_list = c(0, 1),
+  NA_count = TRUE
+)
+```
+
+---
+
+## 📋 Installation
+
+This package is not yet on CRAN. You can install it from source:
+
+```r
+# From local directory
+devtools::load_all("path/to/your/package")
+
+# Or install from GitHub (if hosted there)
+# devtools::install_github("yourusername/datacleanr")
+```
+
+---
+
+## 📄 License
+
+MIT License.
