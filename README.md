@@ -1,6 +1,6 @@
 # 📦 R Data Cleaning Utilities (STATA-style)
 
-This package provides a set of functions to streamline and safeguard common data cleaning operations in R, inspired by workflows in STATA. It is designed for data analysts and applied researchers who value robust diagnostics and careful data handling, particularly when working with administrative datasets or structured survey data.
+This package provides a set of functions to streamline and safeguard common data cleaning operations in R, inspired by workflows in STATA. It is designed for data cleaning, particularly when working with administrative datasets or structured survey data.
 
 ---
 
@@ -66,7 +66,7 @@ validate_presence_and_variation(
 
 ## 📋 Installation
 
-This package is not yet on CRAN. You can install it from source:
+This package is not on CRAN. You can install it from source:
 
 ```r
 # From local directory
@@ -75,9 +75,3 @@ devtools::load_all("path/to/your/package")
 # Or install from GitHub (if hosted there)
 # devtools::install_github("yourusername/datacleanr")
 ```
-
----
-
-## 📄 License
-
-MIT License.
